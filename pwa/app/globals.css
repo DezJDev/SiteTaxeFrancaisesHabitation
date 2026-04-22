@@ -1,0 +1,39 @@
+@import 'tailwindcss';
+
+@keyframes grow {
+    0% {
+        transform: scaleY(0);
+        opacity: 0;
+    }
+    100% {
+        transform: scaleY(1);
+        opacity: 1;
+    }
+}
+
+h1 {
+    @apply text-2xl font-bold;
+}
+
+.bar {
+    transform-origin: bottom;
+    animation: grow 1.2s ease-in-out infinite alternate;
+}
+
+.tooltip-scroll::-webkit-scrollbar {
+    width: 6px;
+}
+
+.tooltip-scroll::-webkit-scrollbar-track {
+    background: #1a1d21;
+    border-radius: 3px;
+}
+
+.tooltip-scroll::-webkit-scrollbar-thumb {
+    background: #3a3f44;
+    border-radius: 3px;
+}
+
+.tooltip-scroll::-webkit-scrollbar-thumb:hover {
+    background: #8884d8;
+}

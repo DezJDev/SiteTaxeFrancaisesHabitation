@@ -1,0 +1,44 @@
+{
+	{$CADDY_GLOBAL_OPTIONS}
+
+	frankenphp {
+		{$FRANKENPHP_CONFIG}
+	}
+}
+
+{$CADDY_EXTRA_CONFIG}
+
+{$SERVER_NAME:localhost} {
+	log {
+		# Redact sensitive query params from logs
+		format filter {
+			request>uri query {
+				replace authorization REDACTED
+			}
+		}
+	}
+
+	root * /app/public
+
+	# Compression
+	encode zstd br gzip
+
+	# Security headers
+	header {
+		X-Content-Type-Options "nosniff"
+		X-Frame-Options "DENY"
+		Referrer-Policy "strict-origin-when-cross-origin"
+		Permissions-Policy "browsing-topics=()"
+	}
+
+	# Route browser requests to Next.js PWA
+	@pwa expression `
+		(header({'Accept': '*text/html*'}) && !path('/api*', '/docs*', '/bundles*', '*.json', '*.html', '*.csv', '*.xml'))
+		|| path('/favicon.ico', '/manifest.json', '/robots.txt', '/sitemap*', '/_next*', '/__next*', '/team*')
+		|| query({'_rsc': '*'})
+	`
+	reverse_proxy @pwa http://{$PWA_UPSTREAM}
+
+	# All other requests (API, static assets) handled by Laravel
+	php_server
+}

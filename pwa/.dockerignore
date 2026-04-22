@@ -1,0 +1,12 @@
+**/*.log
+**/*.md
+**/.git
+.env.local
+.env.*.local
+.gitignore
+.next/
+build/
+node_modules/
+docker-compose*
+compose*
+Dockerfile
